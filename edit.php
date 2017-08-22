@@ -28,7 +28,7 @@ if(isset($_POST['update']))
         $result = mysqli_query($conn, "UPDATE eksoda SET price='$price',date='$date',selected='$selected', comment='$comment' WHERE id=$id");
         
         //redirectig to the display page. In our case, it is index.php
-        header("Location: view.php");
+        header("Location: index.php");
     }
 }
 ?>
@@ -54,7 +54,7 @@ while($row = mysqli_fetch_array($result))
 </head>
  
 <body>
-    <a href="view.php">Home</a>
+    <a href="index.php">Home</a>
     <br/><br/>
     
     <form name="form1" method="post" action="edit.php">

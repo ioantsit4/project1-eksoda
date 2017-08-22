@@ -13,6 +13,6 @@ $result = mysqli_query($conn,"DELETE FROM eksoda WHERE $id=id");
 echo $id;
 
 //redirecting to the display page (index.php in our case)
-header("Location:view.php");
+header("Location:index.php");
 }
 ?>

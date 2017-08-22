@@ -1,121 +1,107 @@
-<?php
-   ob_start();
-   session_start();
-?>
+<!DOCTYPE html>
+<html lang="en">
+	<title>Προβολή</title>
+	<?php include("header.html"); ?>
+<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
 
-<?
-   // error_reporting(E_ALL);
-   // ini_set("display_errors", 1);
-?>
-
-<html lang = "en">
-   
-   <head>
-      <title>Login</title>
-      <link href = "css/bootstrap.min.css" rel = "stylesheet">
-      
-      <style>
-         body {
-            padding-top: 40px;
-            padding-bottom: 40px;
-            background-color: #ADABAB;
-         }
-         
-         .form-signin {
-            max-width: 330px;
-            padding: 15px;
-            margin: 0 auto;
-            color: #017572;
-         }
-         
-         .form-signin .form-signin-heading,
-         .form-signin .checkbox {
-            margin-bottom: 10px;
-         }
-         
-         .form-signin .checkbox {
-            font-weight: normal;
-         }
-         
-         .form-signin .form-control {
-            position: relative;
-            height: auto;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-            padding: 10px;
-            font-size: 16px;
-         }
-         
-         .form-signin .form-control:focus {
-            z-index: 2;
-         }
-         
-         .form-signin input[type="email"] {
-            margin-bottom: -1px;
-            border-bottom-right-radius: 0;
-            border-bottom-left-radius: 0;
-            border-color:#017572;
-         }
-         
-         .form-signin input[type="password"] {
-            margin-bottom: 10px;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-            border-color:#017572;
-         }
-         
-         h2{
-            text-align: center;
-            color: #017572;
-         }
-      </style>
-      
-   </head>
-	
-   <body>
-      
-      <h2>Login Page</h2> 
-      <div class = "container form-signin">
-         
-         <?php
-            $msg = '';
-            
-            if (isset($_POST['login']) && !empty($_POST['username']) 
-               && !empty($_POST['password'])) {
-				
-               if ($_POST['username'] == 'admin' && 
-                  $_POST['password'] == 'admin') {
-                  $_SESSION['valid'] = true;
-                  $_SESSION['timeout'] = time();
-                  $_SESSION['username'] = 'admin';
-                  
-                 // echo 'You have entered valid use name and password';
-				 header("Location: view.php");
-               }else {
-                  $msg = 'Λάθως username or password';
-               }
-            }
-         ?>
-      </div> <!-- /container -->
-      
-      <div class = "container">
-      
-         <form class = "form-signin" role = "form" 
-            action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']); 
-            ?>" method = "post">
-            <h4 class = "form-signin-heading"><?php echo $msg; ?></h4>
-            <input type = "text" class = "form-control" 
-               name = "username" placeholder = "username = admin" 
-               required autofocus></br>
-            <input type = "password" class = "form-control"
-               name = "password" placeholder = "password = admin" required>
-            <button class = "btn btn-lg btn-primary btn-block" type = "submit" 
-               name = "login">Login</button>
-         </form>
+<?php 
+	 if(isset($_POST["submit"]))
+	{
+				/*database connection */
+		include("db/connectdb.php");
+		
+		include("style.css");
 			
-         
-      </div> 
-      
-   </body>
+		$price=$_POST['price'];
+		$date=$_POST['date'];
+		$selected=$_POST['selected'];
+		$comment=$_POST['comment'];
+
+		$sql = "INSERT INTO eksoda (price, date, selected, comment)
+		VALUES ('$price', '$date', '$selected', '$comment')";
+
+		if ($conn->query($sql) === TRUE){
+			/*echo "<script type= 'text/javascript'>alert('New record created successfully');</script>"; */
+			/*Redirect after submit */
+			header("Location: index.php");
+		}
+		else{
+			echo "<script type= 'text/javascript'>alert('Error: " . $sql . "<br>" . $conn->error."');</script>";
+		}
+		$conn->close();
+	} 
+?>
+	<h3 align="center"> Εισαγωγή εξώδων: </h3>
+	<div class="row">
+     <div class="col-md-2"></div>
+     <div class="col-md-4">
+	<form method="post" name="eksoda-form">
+		<label>Ποσό</label><input type="number" name="price" class="form-control" required="true">
+		<label>Ημερομηνία</label><input type="date" name="date" class="form-control"required="true">
+		<label class="radio-inline"><input type="radio" name="selected" value="general"required="true">Γενικά</label>
+        <label class="radio-inline"><input type="radio" name="selected" value="car">Αυτοκήνιτο</label>
+        <label class="radio-inline"><input type="radio" name="selected" value="moto">Μηχανή</label>
+		</br>
+		<label>Αιτιολογεία</label><textarea class="form-control" name="comment" rows="5" id="comment"></textarea>
+		<input type="submit" name="submit"></input>
+	</div>
+	<div class="col-md-2"></div>
+	</div>
+	  </form>
+	
+		<?php    //Connection Database & Table
+			include("db/connectdb.php");
+			$sql = "SELECT * FROM eksoda";
+			
+	?>
+	
+	
+		<!-- ----------------------   Show Data ----------------------- -->
+		
+	<div class="row">
+     <div class="col-md-2"></div>
+     <div class="col-md-6">
+	<h3 align="center"> Τα έξωδά μου: </h3>
+
+	<table class="table table-striped">
+		<thead>
+			<tr>
+			<th>id</th>
+			<th>Ημερομηνία</th>
+			<th>Σχόλιο</th>
+			<th>Κατηγορία</th>
+			<th>Τιμή</th>
+			<th>Επεξεργασία</th>
+			</tr>
+		</thead>
+		<tbody>
+		</div>
+		  <div class="col-md-2"></div>
+		  </div>
+			<?php
+		 $result = $conn->query($sql);
+
+			   // output data of each row
+	while($row = mysqli_fetch_array($result)) {
+				//echo "  " . $row["date"]. "  " . $row["comment"]. " " . $row["selected"]. " " . $row["price"]. "<br>";
+			   echo "<tr>
+						<td>".$row["id"]."</td>
+					  <td>".$row["date"]."</td>
+					  <td>".$row["comment"]."</td>
+					  <td>".$row["selected"]."</td>
+					  <td>".$row["price"]."</td>
+					  <td><a href=\"delete.php?id=$row[id]\" onClick=\"return confirm('Are you sure you want to delete?')\">Delete</a> | <a href=\"edit.php?id=$row[id]\">Edit</a></td>
+					</tr>" ;
+			}
+			  $conn->close();
+			?>
+		</tbody>
+	</table>
+	<?php include("footer.php"); ?>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</body>
 </html>
