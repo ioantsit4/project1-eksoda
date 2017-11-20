@@ -88,7 +88,7 @@
 			   // output data of each row
 			while($row = mysqli_fetch_array($result)) 
 			{
-				echo "  " .$row["date"]. "  " .$row["comment"]. " " .$row["selected"]. " " .$row["price"]. "<br>";
+			//	echo "  " .$row["date"]. "  " .$row["comment"]. " " .$row["selected"]. " " .$row["price"]. "<br>";
 			   echo "<tr>
 					  <td>".$row["id"]."</td>
 					  <td>".$row["date"]."</td>
